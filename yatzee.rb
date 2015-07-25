@@ -8,8 +8,15 @@ class Yatzee
 		die4 = Die.new(6)
 		die5 = Die.new(6)
 		@dice = [die1, die2, die3, die4, die5]
+		@@successes = {"yatzee" => 0,
+			"straight" => 0,
+			"full_house" => 0,
+			"four_of_a_kind" => 0,
+			"three_of_a_kind" => 0
+		}
 	end
 	attr_reader :die_values
+	attr_reader :successes
 	def play
 		first_roll
 		second_roll
@@ -31,13 +38,19 @@ class Yatzee
 	def second_roll
 		puts "Which dice would you like to re-roll? (numbers only separated by a space or 'none' please)"
 		dice_to_reroll = gets.chomp.split(" ")
+		valid_responses = ["none", "1", "2", "3", "4", "5"]
+		dice_to_reroll.each do |die_num|
+			unless valid_responses.include? die_num
+				raise ArgumentError.new("Please use 'none' or a numbers 1-5.")
+			end
+		end
 		if dice_to_reroll == ["none"]
 			return
-		end
-		dice_to_reroll.map! {|die_num| die_num.to_i}
-		raise ArgumentError.new("numbers 1-5 only please") unless dice_to_reroll.max <= 5
-		dice_to_reroll.each do |die_num|
-			@die_values[die_num-1] = @dice[die_num-1].roll
+		else
+			dice_to_reroll.map! {|die_num| die_num.to_i}
+			dice_to_reroll.each do |die_num|
+				@die_values[die_num-1] = @dice[die_num-1].roll
+			end
 		end
 		p @die_values
 	end
@@ -57,14 +70,19 @@ class Yatzee
 	def evaluate
 		if yatzee? == true
 			puts "Yatzee!"
+			@@successes["yatzee"] += 1
 		elsif straight? == true
 			puts "Straight!"
+			@@successes["straight"] += 1
 		elsif full_house? == true
 			puts "Full house!"
+			@@successes["full_house"] += 1
 		elsif four_of_a_kind? == true
 			puts "Four of a kind!"
+			@@successes["four_of_a_kind"] += 1
 		elsif three_of_a_kind? == true
 			puts "Three of a kind!"
+			@@successes["three_of_a_kind"] += 1
 		else
 			puts "Not a winner"
 		end
@@ -138,8 +156,19 @@ class Yatzee
 			return false
 		end
 	end
+	def score
+		puts "You've gotten the following results:"
+		@@successes.each do |type, score|
+			puts "#{score} #{type}"
+		end
+	end
 end
 
-stephanie = Yatzee.new
+newGame = Yatzee.new
 
-stephanie.play
+5.times do 
+	newGame.play
+	puts "------------"
+end
+puts "--------"
+newGame.score
