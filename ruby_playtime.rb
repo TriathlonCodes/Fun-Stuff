@@ -1,3 +1,8 @@
+Games = new.Class
+
+def initialize(type)
+	type = {card, dice, letter, number}
+end
 def letter_game	
 	prng = Random.new
 	number = prng.rand(1..26)
@@ -27,7 +32,7 @@ def letter_game
 		23 => "W",
 		24 => "X",
 		25 => "Y",
-		25 => "Z"
+		26 => "Z"
 	}
 	right_letter = letter[number]
 	puts "Which letter would you like to select?"
@@ -36,9 +41,10 @@ def letter_game
 		puts "Sorry, that was incorrect. Try again"
 		puts "Which letter would you like to select?"
 		guess = gets.chomp.upcase
-		break if guess == "quit"
+		break if guess == "QUIT"
 	end
 	puts "Congratulations! You guessed right! The secret letter was #{right_letter}." 
 end
 
 letter_game
+end
