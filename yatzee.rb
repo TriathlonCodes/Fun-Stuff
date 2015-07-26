@@ -199,6 +199,7 @@ class NewGame
 	attr_accessor :players, :games, :game
 	def play_yahtzee
 		scoring_comparison={}
+		@winning_score = 0
 		@players = @players.map {|player_name, player_game|
 			[player_name, player_game = Yahtzee.new]
 		}
@@ -215,14 +216,25 @@ class NewGame
 			puts player_name 
 			puts "------------------"
 			player_game.score
-			scoring_comparison[player_name] = @total_score
+			scoring_comparison[player_name] = player_game.total_score
+			if @winning_score < player_game.total_score == true
+				@winning_score = player_game.total_score
+			end
 		end
-		winner = scoring_comparison.max_by{|player, score| score}
-		p winner
+		winner = scoring_comparison.select{|player, score| score == @winning_score}
 		puts "-=-=-=-=-=-=-=-=-=-=-=-"
-		puts "And the winner is..."
-		sleep(1)
-		puts winner[0] + "!"
+		if winner.length > 1
+			puts "It's a tie between:"
+			winner.each do |player, score|
+				puts player
+			end
+		else
+			puts "And the winner is..."
+			sleep(1)
+			winner.each do |player, score|
+				puts player
+			end
+		end
 	end
 end
 
