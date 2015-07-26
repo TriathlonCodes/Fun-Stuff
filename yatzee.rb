@@ -1,6 +1,6 @@
 require_relative 'game_class'
 
-class Yatzee
+class Yahtzee
 	def initialize
 		die1 = Die.new(6)
 		die2 = Die.new(6)
@@ -15,9 +15,8 @@ class Yatzee
 			"three_of_a_kind" => 0
 		}
 	end
-	attr_reader :die_values
-	attr_reader :successes
-	def play
+	attr_reader :die_values, :successes, :total_score
+	def take_turn
 		first_roll
 		second_roll
 		third_roll
@@ -157,18 +156,73 @@ class Yatzee
 		end
 	end
 	def score
+		@total_score = 0
+		n=50
 		puts "You've gotten the following results:"
 		@@successes.each do |type, score|
 			puts "#{score} #{type}"
+			@total_score = n * score + @total_score
+			n = n - 10
 		end
+		puts "Your total score is:  #{total_score}"
 	end
 end
 
-newGame = Yatzee.new
-
-5.times do 
-	newGame.play
-	puts "------------"
+class NewGame
+	def initialize(game)
+		@game = game.downcase
+		valid_games = ["yahtzee"]
+		unless valid_games.include? game
+			raise ArgumentError.new("I'm sorry, that is not a game we have to offer.")
+		end
+		puts "Welcome to game center! You have selected to play #{game.upcase}!"
+		get_info
+		start_new_game
+	 end
+	def get_info
+		@players = {}
+		puts "How many players are playing? (Max 6)"
+		num_players = gets.chomp.to_i
+		raise ArgumentError.new("Number of players must be between 1 and 6") unless num_players>0 && num_players<7
+		num_players.times do
+			puts "Please provide a player's name."
+			player = gets.chomp
+			@players[player]=player
+		end
+	end
+	def start_new_game
+		case @game
+		when "yahtzee"
+			play_yahtzee
+		end
+	end
+	attr_accessor :players, :games, :game
+	def play_yahtzee
+		scoring_comparison={}
+		@players = @players.map {|player_name, player_game|
+			[player_name, player_game = Yahtzee.new]
+		}
+		10.times do
+			@players.each do |player_name, player_game|
+				puts "-------"
+				puts "It's #{player_name}'s turn."
+				puts "-------"
+				player_game.take_turn
+			end
+		end
+		@players.each do |player_name, player_game|
+			puts "=================="
+			puts player_name 
+			puts "------------------"
+			player_game.score
+			scoring_comparison[player_name] = @total_score
+		end
+		winner = scoring_comparison.max_by{|player, score| score}
+		p winner
+		puts "-=-=-=-=-=-=-=-=-=-=-=-"
+		puts "And the winner is..."
+		sleep(1)
+		puts winner[0] + "!"
+	end
 end
-puts "--------"
-newGame.score
+
