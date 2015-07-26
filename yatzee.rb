@@ -8,7 +8,7 @@ class Yahtzee
 		die4 = Die.new(6)
 		die5 = Die.new(6)
 		@dice = [die1, die2, die3, die4, die5]
-		@@successes = {"yatzee" => 0,
+		@successes = {"yatzee" => 0,
 			"straight" => 0,
 			"full_house" => 0,
 			"four_of_a_kind" => 0,
@@ -69,19 +69,19 @@ class Yahtzee
 	def evaluate
 		if yatzee? == true
 			puts "Yatzee!"
-			@@successes["yatzee"] += 1
+			@successes["yatzee"] += 1
 		elsif straight? == true
 			puts "Straight!"
-			@@successes["straight"] += 1
+			@successes["straight"] += 1
 		elsif full_house? == true
 			puts "Full house!"
-			@@successes["full_house"] += 1
+			@successes["full_house"] += 1
 		elsif four_of_a_kind? == true
 			puts "Four of a kind!"
-			@@successes["four_of_a_kind"] += 1
+			@successes["four_of_a_kind"] += 1
 		elsif three_of_a_kind? == true
 			puts "Three of a kind!"
-			@@successes["three_of_a_kind"] += 1
+			@successes["three_of_a_kind"] += 1
 		else
 			puts "Not a winner"
 		end
@@ -159,7 +159,7 @@ class Yahtzee
 		@total_score = 0
 		n=50
 		puts "You've gotten the following results:"
-		@@successes.each do |type, score|
+		@successes.each do |type, score|
 			puts "#{score} #{type}"
 			@total_score = n * score + @total_score
 			n = n - 10
