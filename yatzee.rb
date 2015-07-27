@@ -67,6 +67,7 @@ class Yahtzee
 		p @die_values
 	end
 	def evaluate
+		puts ""
 		if yatzee? == true
 			puts "Yatzee!"
 			@successes["yatzee"] += 1
@@ -193,11 +194,18 @@ class NewGame
 	def start_new_game
 		case @game
 		when "yahtzee"
+			puts "Let's play..."
+			sleep(1)
+			puts "              ___ ___ ___ ___  "
+			puts '\ /  /\  |  |  |    / |_  |_   |||'
+			puts ' V  /__\ |__|  |   /  |   |    |||'
+			puts ' | /    \|  |  |  /__ |__ |__  ooo'
 			play_yahtzee
 		end
 	end
 	attr_accessor :players, :games, :game
 	def play_yahtzee
+
 		scoring_comparison={}
 		@winning_score = 0
 		@players = @players.map {|player_name, player_game|
@@ -205,14 +213,18 @@ class NewGame
 		}
 		10.times do
 			@players.each do |player_name, player_game|
+				puts ""
 				puts "-------"
-				puts "It's #{player_name}'s turn."
+				sleep(1)
+				puts "It's #{player_name}'s turn. (Press Enter to continue)"
 				puts "-------"
+				gets
 				player_game.take_turn
 			end
 		end
 		@players.each do |player_name, player_game|
 			puts "=================="
+			puts " "
 			puts player_name 
 			puts "------------------"
 			player_game.score
@@ -229,12 +241,14 @@ class NewGame
 				puts player
 			end
 		else
-			puts "And the winner is..."
-			sleep(1)
+			puts "And the winner is......"
+			sleep(2)
 			winner.each do |player, score|
 				puts player
 			end
 		end
+		puts "Press enter to end game."
+		gets
 	end
 end
 
