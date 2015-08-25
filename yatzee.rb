@@ -33,19 +33,20 @@ class Yahtzee
 		end
 		p @die_values
 	end
-	
+
 	def second_roll
 		puts "Which dice would you like to re-roll? (numbers only separated by a space or 'none' please)"
 		dice_to_reroll = gets.chomp.split(" ")
-		valid_responses = ["none", "1", "2", "3", "4", "5"]
-		dice_to_reroll.each do |die_num|
-			unless valid_responses.include? die_num
-				raise ArgumentError.new("Please use 'none' or a numbers 1-5.")
-			end
-		end
 		if dice_to_reroll == ["none"]
 			return
 		else
+			dice_to_reroll.map! {|die_num|
+				if die_num.match
+				die_num.to_i}
+			while dice_to_reroll.max > 5
+				puts "Sorry, that is not a valid response"
+				second_roll
+			end
 			dice_to_reroll.map! {|die_num| die_num.to_i}
 			dice_to_reroll.each do |die_num|
 				@die_values[die_num-1] = @dice[die_num-1].roll
@@ -60,7 +61,10 @@ class Yahtzee
 			return
 		end
 		dice_to_reroll.map! {|die_num| die_num.to_i}
-		raise ArgumentError.new("numbers 1-5 only please") unless dice_to_reroll.max <= 5
+		while dice_to_reroll.max > 5
+			puts "Sorry, that is not a valid response"
+			third_roll
+		end
 		dice_to_reroll.each do |die_num|
 			@die_values[die_num-1] = @dice[die_num-1].roll
 		end
@@ -184,7 +188,10 @@ class NewGame
 		@players = {}
 		puts "How many players are playing? (Max 6)"
 		num_players = gets.chomp.to_i
-		raise ArgumentError.new("Number of players must be between 1 and 6") unless num_players>0 && num_players<7
+		while num_players > 6 || num_players < 1
+			puts "Please pick number of players, 1-6"
+			num_players = gets.chomp.to_i
+		end
 		num_players.times do
 			puts "Please provide a player's name."
 			player = gets.chomp
@@ -225,7 +232,7 @@ class NewGame
 		@players.each do |player_name, player_game|
 			puts "=================="
 			puts " "
-			puts player_name 
+			puts player_name
 			puts "------------------"
 			player_game.score
 			scoring_comparison[player_name] = player_game.total_score
